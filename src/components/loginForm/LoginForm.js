@@ -1,4 +1,5 @@
 import css from "./LoginForm.module.css";
+import PropTypes from "prop-types";
 
 export const LoginForm = ({ onHandleSubmit, name, number, onHandleChange }) => {
   return (
@@ -27,3 +28,10 @@ export const LoginForm = ({ onHandleSubmit, name, number, onHandleChange }) => {
     </form>
   )
 }
+
+LoginForm.propTypes = {
+  onHandleSubmit: PropTypes.func,
+  onHandleChange: PropTypes.func,
+  name: PropTypes.string,
+  number: PropTypes.string,
+};

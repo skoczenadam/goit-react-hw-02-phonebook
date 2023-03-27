@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from "prop-types";
 
 export const Filter = ({ onHandleFilterChange }) => {
   const [filterValue, setFilterValue] = useState('');
@@ -16,3 +17,7 @@ export const Filter = ({ onHandleFilterChange }) => {
     </>
   )
 }
+
+Filter.propTypes = {
+  onHandleFilterChange: PropTypes.func,
+};
