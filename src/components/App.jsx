@@ -1,86 +1,69 @@
-import { Component } from 'react';
+import React, { Component} from 'react';
 import { nanoid } from 'nanoid';
-
-export const LoginForm = ({ onHandleSubmit, name, onHandleChange }) => {
-  return (
-    <form onSubmit={onHandleSubmit}>
-      <label>Name
-      <input
-        type="text"
-        name="name"
-        pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-        title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-        required
-        value={name}
-        onChange={onHandleChange}
-        />
-        </label>
-      <button type="submit">Login</button>
-    </form>
-  )
-}
-
-export const Section = ({ title }) => {
-  return (
-    <h1>{title}</h1>
-  )
-}
-
-export const ListUl = ({ children }) => {
-  return (
-    <ul>
-      {children}
-    </ul>
-  )
-}
-
-export const ListForm = ({newContact}) => {
-  return (
-    <>
-      {newContact.map(contact => (
-        <li key={contact.id}>{contact.name}</li>
-      ))}
-    </>
-  )
-}
+import { LoginForm } from './loginForm/LoginForm';
+import { Filter } from './filter/Filter';
+import { ContactList } from './contactList/ContactList';
 
 export class App extends Component {
   state = {
     contacts: [],
-    name: ''
-  }
+    filter: '',
+  };
+
+  handleFilterChange = filterValue => {
+    this.setState({
+      filter: filterValue,
+    });
+  };
 
   handleChange = e => {
+    const { name, value } = e.target;
     this.setState({
-      name: e.target.value
+      [name]: value,
     });
-  }
+  };
 
   handleSubmit = e => {
     e.preventDefault();
-    const { name, contacts } = this.state;
+    const { name, contacts, number } = this.state;
+  
+    const isContactExists = contacts.some(contact => contact.name === name);
+    if (isContactExists) {
+    alert(`${name} już istnieje w książce telefonicznej!`);
+    return;
+    }
     const newContact = {
       name: name,
-      id: nanoid()
+      number: number,
+      id: nanoid(),
     };
     this.setState({
       contacts: [...contacts, newContact],
-      name: ''
+      name: '',
+      number: '',
+    });
+  };
+
+  handleDeleteContact = contactId => {
+    const { contacts } = this.state;
+    const updatedContacts = contacts.filter(contact => contact.id !== contactId);
+    this.setState({
+      contacts: updatedContacts,
     });
   }
 
+
   render() {
-    const { contacts, name } = this.state;
+    const { contacts, name, number, filter } = this.state;
 
     return (
-      <>
-        <Section title="Phonebook" />
-        <LoginForm onHandleSubmit={this.handleSubmit} name={name} onHandleChange={this.handleChange} />
-        <Section title="Contacts" />
-        <ListUl>
-          <ListForm newContact={contacts}/>
-        </ListUl>
-      </>
-    )
+      <div>
+        <h1>Phonebook</h1>
+        <LoginForm onHandleSubmit={this.handleSubmit} name={name} number={number} onHandleChange={this.handleChange} />
+        <h1>Contacts</h1>
+        <Filter onHandleFilterChange={this.handleFilterChange} />
+        <ContactList newContact={contacts} filter={filter} onDeleteContact={this.handleDeleteContact} />
+      </div>
+    );
   }
 }
