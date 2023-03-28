@@ -27,7 +27,7 @@ export class App extends Component {
     e.preventDefault();
     const { name, contacts, number } = this.state;
   
-    const isContactExists = contacts.some(contact => contact.name === name);
+    const isContactExists = contacts.some(contact => contact.name.toLowerCase === name.toLowerCase);
     if (isContactExists) {
     alert(`${name} już istnieje w książce telefonicznej!`);
     return;
